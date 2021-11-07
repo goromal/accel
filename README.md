@@ -17,6 +17,22 @@ Andrew's Custom Command Environment for Linux
 - Encode knowledge clearly where possible
 - Link to 3b1b manif tools?
 
+## Command list
+
+- [ ] scrape
+- [ ] flagon
+- [ ] sunnyside
+- [ ] conf [DIR]
+  - if no ConfLists.txt in DIR, then output template
+  - declarative philosophy
+  - allow chained actions
+  - parser
+  - generate makefile with low-level/internal commands and intermediate representations
+  - perform scheduling from dependencies (implicit and explicit)
+  - Error: no rule to combine a pdf and a video into a single output.
+- [ ] make
+  - mp4, gif, book, mdpdf/ldgen, getvideo, ichabod, abc--, songsplit, svgtool, notable, reddarch, html page, dw page, epub
+
 # Python Package Template Project
 
 [![image](https://img.shields.io/pypi/v/py-package-template.svg)](https://pypi.org/project/py-package-template/)
