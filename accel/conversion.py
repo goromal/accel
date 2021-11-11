@@ -1,4 +1,5 @@
 from accel import inputs
+from colorama import Fore, Style
 
 class Conversion(object):
     @staticmethod
@@ -8,3 +9,10 @@ class Conversion(object):
         parser.add_argument('-o', '--output', type=str, default='output', action='store', help='Specify output filename')
     def __init__(self, args):
         self.inputs = inputs.InputSet(args.input).items
+        self.verbose = args.verbose
+    def printError(self, s):
+        print(Fore.RED + s + Style.RESET_ALL)
+        exit()
+    def printInfo(self, s):
+        if self.verbose:
+            print(s)

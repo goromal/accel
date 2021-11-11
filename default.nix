@@ -11,6 +11,7 @@ in python.pkgs.buildPythonPackage rec {
     propagatedBuildInputs = [
         pypkgs.numpy
         pypkgs.requests
+        pypkgs.colorama
     ];
     doCheck = false;
 }
