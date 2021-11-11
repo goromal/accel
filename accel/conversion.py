@@ -1,4 +1,4 @@
-import inputs
+from accel import inputs
 
 class Conversion(object):
     @staticmethod

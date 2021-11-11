@@ -41,7 +41,7 @@ def cli():
     subparsers = parser.add_subparsers(dest='cmd', help='Commands')
     for Command in COMMANDS:
         Command.addParserItems(subparsers)
-    parser.add_argument('-v', '--verbose', dest='verbose', action='store_true')
+    parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='Show verbose output.')
     parser.set_defaults(verbose=False)
     args, rems = parser.parse_known_args()
     if args.cmd in COMMAND_MAP:
