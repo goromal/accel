@@ -12,6 +12,9 @@ class Sunnyside(Conversion):
         Conversion.addParserItems(parser, Sunnyside.ALLOWED_TYPES)
         parser.add_argument('-s', '--shift', type=int, help='Shift amount.')
         parser.add_argument('-k', '--key', type=str, help='Character key.')
-    def __init__(self, args):
-        super(Sunnyside, self).__init__(args)
+    @staticmethod
+    def fromArgs(args):
+        return Sunnyside(args.input, args.output, args.verbose) # TODO
+    def __init__(self, input, output, verbose):
+        super(Sunnyside, self).__init__(input, output, verbose)
         raise NotImplementedError

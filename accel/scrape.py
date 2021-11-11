@@ -16,7 +16,10 @@ class Scrape(Conversion):
         Conversion.addParserItems(parser, Scrape.ALLOWED_TYPES)
         parser.add_argument('-s', '--scraper', choices=scrapers.keys(), default='simple-link-scraper', help='The type of content to be scraped.')
         parser.add_argument('-x', '--xpath', type=str, default='', help='XPath to the tag encompassing the objects to be scraped.')
-    def __init__(self, args):
-        super(Scrape, self).__init__(args)
+    @staticmethod
+    def fromArgs(args):
+        return Scrape(args.input, args.output, args.verbose) # TODO
+    def __init__(self, input, output, verbose):
+        super(Scrape, self).__init__(input, output, verbose)
         raise NotImplementedError
         # check if output is dir and/or file/dir spec %d

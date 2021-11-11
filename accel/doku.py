@@ -16,6 +16,9 @@ class Doku(Conversion):
         parser = subparsers.add_parser(Doku.KEY, help='Create a DokuWiki page txt file.')
         Conversion.addParserItems(parser, Doku.ALLOWED_TYPES)
         # TODO parser.add_argument()
-    def __init__(self, args):
-        super(Doku, self).__init__(args)
+    @staticmethod
+    def fromArgs(args):
+        return Doku(args.input, args.output, args.verbose) # TODO
+    def __init__(self, input, output, verbose):
+        super(Doku, self).__init__(input, output, verbose)
         raise NotImplementedError

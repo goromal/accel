@@ -17,6 +17,9 @@ class Gif(Conversion):
         parser = subparsers.add_parser(Gif.KEY, help='Create a gif file.')
         Conversion.addParserItems(parser, Gif.ALLOWED_TYPES)
         # TODO parser.add_argument()
-    def __init__(self, args):
-        super(Gif, self).__init__(args)
+    @staticmethod
+    def fromArgs(args):
+        return Gif(args.input, args.output, args.verbose) # TODO
+    def __init__(self, input, output, verbose):
+        super(Gif, self).__init__(input, output, verbose)
         raise NotImplementedError

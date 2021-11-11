@@ -18,6 +18,9 @@ class Svg(Conversion):
         parser.add_argument('--rmwhite', action='store_true', help='Remove all white elements from the output.')
         parser.add_argument('--poppler', action='store_true', help='Convert using Poppler fonts where applicable.')
         parser.add_argument('--crop', action='store_true', help='Crop output to content.')
-    def __init__(self, args):
-        super(Svg, self).__init__(args)
+    @staticmethod
+    def fromArgs(args):
+        return Svg(args.input, args.output, args.verbose, args.scour, args.rmtext, args.rmwhite, args.poppler, args.crop)
+    def __init__(self, input, output, verbose, scour, rmtext, rmwhite, poppler, crop):
+        super(Svg, self).__init__(input, output, verbose)
         raise NotImplementedError

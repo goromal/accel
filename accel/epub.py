@@ -16,6 +16,9 @@ class Epub(Conversion):
         parser = subparsers.add_parser(Epub.KEY, help='Create an epub file.')
         Conversion.addParserItems(parser, Epub.ALLOWED_TYPES)
         # TODO parser.add_argument()
-    def __init__(self, args):
-        super(Epub, self).__init__(args)
+    @staticmethod
+    def fromArgs(args):
+        return Epub(args.input, args.output, args.verbose) # TODO
+    def __init__(self, input, output, verbose):
+        super(Epub, self).__init__(input, output, verbose)
         raise NotImplementedError

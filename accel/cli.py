@@ -21,7 +21,6 @@ COMMANDS = (
     Scrape,
     Sunnyside,
     Zip,
-    
     Mp4,
     Mp3,
     Pdf,
@@ -45,7 +44,7 @@ def cli():
     parser.set_defaults(verbose=False)
     args, rems = parser.parse_known_args()
     if args.cmd in COMMAND_MAP:
-        exe = COMMAND_MAP[args.cmd](args) 
+        exe = COMMAND_MAP[args.cmd].fromArgs(args) 
     else:
         print('Unrecognized command: %s\n' % args.cmd)
         parser.print_help(sys.stderr)

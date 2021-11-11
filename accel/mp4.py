@@ -15,6 +15,9 @@ class Mp4(Conversion):
         parser = subparsers.add_parser(Mp4.KEY, help='Create an mp4 file.')
         Conversion.addParserItems(parser, Mp4.ALLOWED_TYPES)
         # TODO parser.add_argument()
-    def __init__(self, args):
-        super(Mp4, self).__init__(args)
+    @staticmethod
+    def fromArgs(args):
+        return Mp4(args.input, args.output, args.verbose) # TODO
+    def __init__(self, input, output, verbose):
+        super(Mp4, self).__init__(input, output, verbose)
         raise NotImplementedError

@@ -23,6 +23,9 @@ class Png(Conversion):
         parser.add_argument('--width', type=int, default=None, help='Output width in pixels.')
         parser.add_argument('--screen', type=str, default='0:0', help='Time at which to take a screenshot (for video inputs).')
         parser.add_argument('--dpi', type=int, default=300, help='DPI for vector graphic conversions.')
-    def __init__(self, args):
-        super(Png, self).__init__(args)
+    @staticmethod
+    def fromArgs(args):
+        return Png(args.input, args.output, args.verbose, args.height, args.width, args.screen, args.dpi)
+    def __init__(self, input, output, verbose, height, width, screen, dpi):
+        super(Png, self).__init__(input, output, verbose)
         raise NotImplementedError

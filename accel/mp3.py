@@ -18,6 +18,9 @@ class Mp3(Conversion):
         parser = subparsers.add_parser(Mp3.KEY, help='Create an mp3 file.')
         Conversion.addParserItems(parser, Mp3.ALLOWED_TYPES)
         # TODO parser.add_argument()
-    def __init__(self, args):
-        super(Mp3, self).__init__(args)
+    @staticmethod
+    def fromArgs(args):
+        return Mp3(args.input, args.output, args.verbose) # TODO
+    def __init__(self, input, output, verbose):
+        super(Mp3, self).__init__(input, output, verbose)
         raise NotImplementedError
