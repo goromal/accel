@@ -13,6 +13,7 @@ mkShell rec {
 	ffmpeg
 	scipy
 	networkx
+	colormath
 #        black
 #        flake8
 #        mypy
