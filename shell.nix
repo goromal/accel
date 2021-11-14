@@ -10,6 +10,9 @@ mkShell rec {
     buildInputs = [
         accel
         virtualenv
+	ffmpeg
+	scipy
+	networkx
 #        black
 #        flake8
 #        mypy

@@ -26,7 +26,7 @@ COMMANDS = (
     Mp3,
     Pdf,
     Svg,
-    Png
+    Png,
     Gif,
     Epub,
     Doku,
