@@ -32,7 +32,7 @@ setup(
     zip_safe=False,
     entry_points={
         'console_scripts': [
-            'accel = accel.cli:cli'
+            'accel = accel.core.cli:cli'
         ],
     },
 #    classifiers=[

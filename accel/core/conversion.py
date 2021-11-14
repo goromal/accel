@@ -1,4 +1,4 @@
-from accel import inputs
+from accel.utils import inputs
 from colorama import Fore, Style
 
 class Conversion(object):

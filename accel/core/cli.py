@@ -1,13 +1,14 @@
 import sys
 import argparse
+from accel.utils.inputs import Input, InputSet
 from accel.host import Host
 from accel.scrape import Scrape
 from accel.sunnyside import Sunnyside
-from accel.inputs import Input, InputSet
 from accel.mp4  import Mp4
 from accel.mp3  import Mp3
 from accel.pdf  import Pdf
 from accel.svg  import Svg
+from accel.png  import Png
 from accel.gif  import Gif
 from accel.zip  import Zip
 from accel.epub import Epub
@@ -25,6 +26,7 @@ COMMANDS = (
     Mp3,
     Pdf,
     Svg,
+    Png
     Gif,
     Epub,
     Doku,

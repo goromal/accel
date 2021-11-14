@@ -1,5 +1,5 @@
-from accel.inputs import Input
-from accel.conversion import Conversion
+from accel.utils.inputs import Input
+from accel.core.conversion import Conversion
 
 class Doku(Conversion):
     KEY = 'doku'
