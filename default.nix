@@ -12,6 +12,9 @@ in python.pkgs.buildPythonPackage rec {
         pypkgs.numpy
         pypkgs.requests
         pypkgs.colorama
+	pypkgs.ffmpeg-python
+	pypkgs.scipy
+	pypkgs.networkx
     ];
     doCheck = false;
 }

@@ -14,6 +14,7 @@ mkShell rec {
 	scipy
 	networkx
 	colormath
+        ffmpeg-python
 #        black
 #        flake8
 #        mypy
