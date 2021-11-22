@@ -51,5 +51,5 @@ class TestSE3:
         w = np.random.random((6,1))
         T2 = SE3.Exp(SE3.Log(T))
         assert np.allclose(T.tq(), T2.tq())
-        w2 = SE3.Log(SE3.Exp(w2))
+        w2 = SE3.Log(SE3.Exp(w))
         assert np.allclose(w, w2)
