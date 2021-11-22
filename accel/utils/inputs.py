@@ -90,3 +90,4 @@ class InputSet(object):
             self.items.append((input, FILESPECS[ext]))
         except KeyError:
             self.items.append((input, Input.FILE_UNRECOGNIZED))
+            

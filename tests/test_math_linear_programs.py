@@ -5,7 +5,7 @@ tests.test_utils.py
 Test suite for the accel utils modules.
 """
 
-from copy import deepcopy
+# from copy import deepcopy
 
 import pytest
 
