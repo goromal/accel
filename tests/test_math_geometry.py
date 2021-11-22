@@ -36,7 +36,7 @@ class TestSE3:
         w = np.random.random((6,1))
         T2 = T1 + w
         w2 = T2 - T1
-        asswert w == w2
+        assert w == w2
     
     def test_composition(self):
         np.random.seed(144440)
