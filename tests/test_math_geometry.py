@@ -19,7 +19,7 @@ class TestSO3:
         w = np.array([[0.5, 0.2, 0.1]]).T
         R2 = R1 + w
         w2 = R2 - R1
-        assert w == w2
+        assert np.allclose(w, w2)
         
     def test_euler(self):
         roll = -1.2
@@ -27,7 +27,7 @@ class TestSO3:
         yaw = -0.4
         q = SO3.fromEuler(roll, pitch, yaw)
         roll2, pitch2, yaw2 = q.toEuler()
-        assert roll == roll2 and pitch == pitch2 and yaw == yaw2
+        assert np.isclose(roll, roll2) and np.isclose(pitch, pitch2) and np.isclose(yaw, yaw2)
         
 class TestSE3:
     def test_plus_minus(self):
@@ -36,20 +36,20 @@ class TestSE3:
         w = np.random.random((6,1))
         T2 = T1 + w
         w2 = T2 - T1
-        assert w == w2
+        assert np.allclose(w, w2)
     
     def test_composition(self):
         np.random.seed(144440)
         TI = SE3.identity()
         T1 = SE3.random()
         T2 = T1 * T1.inverse()
-        assert TI.tq() == T2.tq()
+        assert np.allclose(TI.tq(), T2.tq())
         
     def test_chart_maps(self):
         np.random.seed(144440)
         T = SE3.random()
         w = np.random.random((6,1))
         T2 = SE3.Exp(SE3.Log(T))
-        assert T.tq() == T2.tq()
+        assert np.allclose(T.tq(), T2.tq())
         w2 = SE3.Log(SE3.Exp(w2))
-        assert w == w2
+        assert np.allclose(w, w2)
