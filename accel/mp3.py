@@ -17,6 +17,7 @@ class Mp3(Conversion):
     def addParserItems(subparsers):
         parser = subparsers.add_parser(Mp3.KEY, help='Create an mp3 file.')
         Conversion.addParserItems(parser, Mp3.ALLOWED_TYPES)
+        parser.add_argument('--transpose', type=str, default='0', help='Transpose audio by specified number of half-steps (+/-)')
         # TODO parser.add_argument()
     @staticmethod
     def fromArgs(args):
