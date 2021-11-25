@@ -1,0 +1,10 @@
+diff --git a/ceres-solver/CMakeLists.txt b/ceres-solver/CMakeLists.txt
+index 055bd0e..ffbc0c0 100644
+--- a/ceres-solver/CMakeLists.txt
++++ b/ceres-solver/CMakeLists.txt
+@@ -802,3 +802,5 @@ if (EXPORT_BUILD_DIR)
+     "${Ceres_BINARY_DIR}/CeresConfig.cmake" @ONLY)
+ 
+ endif (EXPORT_BUILD_DIR)
++
++include(pyceres-src/AddToCeres.cmake)
