@@ -1,5 +1,5 @@
 # accel
 
-Andrew's Custom Command Environment for Linux
+Andrew's Custom Computational Environment for Linux
 
 **Under construction.**
