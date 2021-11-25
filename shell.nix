@@ -9,11 +9,12 @@ with python.pkgs;
 mkShell rec {
     buildInputs = [
         accel
+        pytest
         virtualenv
-	ffmpeg
-	scipy
-	networkx
-	colormath
+	      ffmpeg
+	      scipy
+	      networkx
+	      colormath
         ffmpeg-python
 #        black
 #        flake8
