@@ -2,7 +2,7 @@ import numpy as np
 from scipy.optimize import linprog
 
 class LinearProgram(object):
-    """A flexing, adaptive linear program."""
+    """A flexing, adaptive linear program taking string expressions."""
     def __init__(self):
         pass # TODO
         # self.
@@ -26,4 +26,5 @@ class Scheduler(object):
         pass # TODO
     
     def getSchedule(self, activeEvents=None):
+        events = activeEvents if activeEvents is not None else self.events
         pass
