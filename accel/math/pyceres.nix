@@ -5,7 +5,7 @@
 }:
 pkgs.clangStdenv.mkDerivation {
     name = "pyceres";
-    version = "0.0.0";
+    version = "1.0.0";
     src = pkgs.lib.cleanSource ./.;
     
     nativeBuildInputs = [

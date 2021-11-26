@@ -18,10 +18,16 @@ let
         sha256 = "1qbc21ivwy7vwfshh6iasyvbdri85inkwy3gnnxyvk8dkpw2m1vl";
     };
     manif-geom-cpp = import (builtins.fetchGit {
-      url = "https://github.com/goromal/manif-geom-cpp.git";
-      rev = "90a35f640baa66764165d9e2221e0c985ca1541e";
-      ref = "master";
+        url = "https://github.com/goromal/manif-geom-cpp.git";
+        rev = "90a35f640baa66764165d9e2221e0c985ca1541e";
+        ref = "master";
     }) { inherit pkgs; };
+    manif-geom-py = import ./accel/math/geometry.nix {
+        inherit pkgs;
+        inherit manif-geom-cpp;
+        inherit python;
+        inherit pybind11;
+    };
 in python.pkgs.buildPythonPackage rec {
     pname = "accel";
     version = "0.0.0";
