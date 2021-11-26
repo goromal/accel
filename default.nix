@@ -4,6 +4,7 @@ let
     pkgs = import (if local then <nixpkgs> else builtins.fetchGit (import ./src.nix)) {};
     python = pkgs.python37;
     pypkgs = python.pkgs;
+    pythonLibDir = "lib/python${python.passthru.pythonVersion}/site-packages";
     pybind11 = pkgs.fetchgit {
         fetchSubmodules = true;
         url = "https://github.com/pybind/pybind11.git";
@@ -48,13 +49,13 @@ in python.pkgs.buildPythonPackage rec {
       echo "----------"
       ls -a $out/lib
       echo "----------"
-      ls -a $out/lib/python${python.passthru.pythonVersion}/site-packages
+      ls -a $out/${pythonLibDir}
       echo "----------"
-      ls -a $out/lib/python3.7/site-packages/accel
+      ls -a $out/${pythonLibDir}/accel
       echo "----------"
-      cat $out/lib/python3.7/site-packages/accel/gif.py
+      cat $out/${pythonLibDir}/accel/gif.py
       echo "----------"
-      ls -a $out/lib/python3.7/site-packages/accel/math
+      ls -a $out/${pythonLibDir}/accel/math
       echo "----------"
       ls -a $out/mgc
       echo "----------"
