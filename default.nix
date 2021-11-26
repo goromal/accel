@@ -52,9 +52,9 @@ in python.pkgs.buildPythonPackage rec {
       echo "----------"
       ls $out/lib/python3.7/site-packages
       echo "----------"
-      cat $out/lib/python3.7/site-packages/gif.py
+      cat $out/lib/python3.7/site-packages/accel
       echo "----------"
-      ls $out/lib/python3.7/site-packages/accel
+      ls $out/lib/python3.7/site-packages/accel/gif.py
       echo "----------"
       ls $out/lib/python3.7/site-packages/accel-0.0.0.dist-info
       echo "----------"
