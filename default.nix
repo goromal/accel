@@ -34,4 +34,7 @@ in python.pkgs.buildPythonPackage rec {
 	    pypkgs.networkx
     ];
     doCheck = false;
+    preConfigure = ‘’
+      cp -r ${manif-geom-cpp} $out
+    ‘’;
 }
