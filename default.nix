@@ -42,23 +42,21 @@ in python.pkgs.buildPythonPackage rec {
     '';
     postInstall = ''
       echo $out
-      ls $out
+      ls -a $out
       echo "----------"
-      ls $out/bin
+      ls -a $out/bin
       echo "----------"
-      ls $out/bin/accel
+      ls -a $out/lib
       echo "----------"
-      ls $out/lib
+      ls -a $out/lib/python3.7/site-packages
       echo "----------"
-      ls $out/lib/python3.7/site-packages
+      ls -a $out/lib/python3.7/site-packages/accel
       echo "----------"
-      cat $out/lib/python3.7/site-packages/accel
+      cat $out/lib/python3.7/site-packages/accel/gif.py
       echo "----------"
-      ls $out/lib/python3.7/site-packages/accel/gif.py
+      ls -a $out/lib/python3.7/site-packages/accel-0.0.0.dist-info
       echo "----------"
-      ls $out/lib/python3.7/site-packages/accel-0.0.0.dist-info
-      echo "----------"
-      ls $out/mgc
+      ls -a $out/mgc
       echo "----------"
     '';
 }
