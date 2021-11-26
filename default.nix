@@ -35,6 +35,14 @@ in python.pkgs.buildPythonPackage rec {
     ];
     doCheck = false;
     preConfigure = ''
-      cp -r ${manif-geom-cpp} $out
+      mkdir $out/mgc
+      cp -r ${manif-geom-cpp}/* $out/mgc/
+      chmod -R 777 $out/mgc
+      ls $out
+    '';
+    postInstall = ''
+      ls $out
+      echo "----------"
+      ls $out/accel
     '';
 }
