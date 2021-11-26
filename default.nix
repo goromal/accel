@@ -50,7 +50,7 @@ in python.pkgs.buildPythonPackage rec {
       echo "----------"
       ls $out/lib
       echo "----------"
-      ls $out/lib/python3.7
+      ls $out/lib/python3.7/site-packages
       echo "----------"
       ls $out/mgc
       echo "----------"
