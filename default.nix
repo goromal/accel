@@ -17,7 +17,7 @@ let
         sha256 = "1qbc21ivwy7vwfshh6iasyvbdri85inkwy3gnnxyvk8dkpw2m1vl";
     };
     manif-geom-cpp = import (builtins.fetchGit {
-      url = "git@github.com:goromal/manif-geom-cpp.git";
+      url = "https://github.com/goromal/manif-geom-cpp.git";
       rev = "90a35f640baa66764165d9e2221e0c985ca1541e";
       ref = "master";
     }) { inherit pkgs; };
