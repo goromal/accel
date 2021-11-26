@@ -43,6 +43,11 @@ in python.pkgs.buildPythonPackage rec {
     postInstall = ''
       ls $out
       echo "----------"
-      ls $out/accel
+      ls $out/bin
+      echo "----------"
+      ls $out/lib
+      echo "----------"
+      ls $out/mgc
+      echo "----------"
     '';
 }
