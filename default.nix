@@ -16,10 +16,10 @@ let
         rev = "31008453fe979f947e594df15a7e254d6631881b";
         sha256 = "1qbc21ivwy7vwfshh6iasyvbdri85inkwy3gnnxyvk8dkpw2m1vl";
     };
-    manif-geom-cpp = import (pkgs.fetchgit {
+    manif-geom-cpp = import (builtins.fetchGit {
       url = "https://github.com/goromal/manif-geom-cpp.git";
       rev = "90a35f640baa66764165d9e2221e0c985ca1541e";
-      sha256 = "1qbc21ivwy7vwfshh6iasyvbdri85inkwy3gnnxyvk8dkpw2m1vl";
+      ref = "master";
     }) { inherit pkgs; };
 in python.pkgs.buildPythonPackage rec {
     pname = "accel";
