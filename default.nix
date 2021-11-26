@@ -48,7 +48,7 @@ in python.pkgs.buildPythonPackage rec {
       echo "----------"
       ls -a $out/lib
       echo "----------"
-      ls -a $out/lib/python3.7/site-packages
+      ls -a $out/lib/python${python.passthru.pythonVersion}/site-packages
       echo "----------"
       ls -a $out/lib/python3.7/site-packages/accel
       echo "----------"
