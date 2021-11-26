@@ -54,9 +54,7 @@ in python.pkgs.buildPythonPackage rec {
       echo "----------"
       cat $out/lib/python3.7/site-packages/accel/gif.py
       echo "----------"
-      ls -a $out/lib/python3.7/site-packages/accel-0.0.0.dist-info
-      echo "----------"
-      cat $out/lib/python3.7/site-packages/accel-0.0.0.dist-info/WHEEL
+      ls -a $out/lib/python3.7/site-packages/accel/math
       echo "----------"
       ls -a $out/mgc
       echo "----------"

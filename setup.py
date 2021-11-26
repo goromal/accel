@@ -24,7 +24,7 @@ setup(
     author=about['__author__'],
     author_email=about['__author_email__'],
     url=about['__url__'],
-    packages=find_packages(),
+    packages=find_packages(exclude=('tests')),
     include_package_data=True,
     python_requires=">=3.7.*",
     install_requires=['numpy', 'requests', 'colorama'],
