@@ -45,6 +45,8 @@ in python.pkgs.buildPythonPackage rec {
       echo "----------"
       ls $out/bin
       echo "----------"
+      ls $out/bin/accel
+      echo "----------"
       ls $out/lib
       echo "----------"
       ls $out/mgc
