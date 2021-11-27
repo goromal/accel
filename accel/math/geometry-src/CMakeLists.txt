@@ -9,4 +9,4 @@ include_directories(
 )
 
 pybind11_add_module(geometry python_module.cpp)
-target_link_libraries(geometry manif-geom-cpp)
+target_link_libraries(geometry PRIVATE manif-geom-cpp)
