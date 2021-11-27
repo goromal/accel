@@ -45,9 +45,9 @@ class TestSE3:
         T1 = SE3.random()
         print(T1)
         # T2 = T1 * T1.inverse()
-        T2 = TI * TI
+        # T2 = TI * TI
         # T2 = T1 * T1
-        assert True # np.allclose(TI.array(), T2.array())
+        assert np.allclose(TI.array(), T1.array()) # np.allclose(TI.array(), T2.array())
         
 #    def test_chart_maps(self):
 #        np.random.seed(144440)
