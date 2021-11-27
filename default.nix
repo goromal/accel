@@ -19,7 +19,7 @@ let
     };
     manif-geom-cpp = import (builtins.fetchGit {
         url = "https://github.com/goromal/manif-geom-cpp.git";
-        rev = "767a09e9ee04677c68b69e33465d2f14d9b9b776";
+        rev = "53d05cfdb98bc434393cd68a98295196f28858c9";
         ref = "dev/se3-build";
     }) { inherit pkgs; };
     geometry = import ./accel/math/geometry.nix {
