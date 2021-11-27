@@ -42,8 +42,8 @@ class TestSE3:
         np.random.seed(144440)
         TI = SE3.identity()
         print(TI)
-        print(T1)
         T1 = SE3.random()
+        print(T1)
         # T2 = T1 * T1.inverse()
         T2 = TI * TI
         # T2 = T1 * T1
