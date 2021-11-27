@@ -22,7 +22,7 @@ let
         rev = "90a35f640baa66764165d9e2221e0c985ca1541e";
         ref = "master";
     }) { inherit pkgs; };
-    manif-geom-py = import ./accel/math/geometry.nix {
+    geometry = import ./accel/math/geometry.nix {
         inherit pkgs;
         inherit manif-geom-cpp;
         inherit python;
@@ -41,29 +41,8 @@ in python.pkgs.buildPythonPackage rec {
 	    pypkgs.networkx
     ];
     doCheck = false;
-    preConfigure = ''
-      mkdir -p $out/mgc
-      cp -r ${manif-geom-py}/* $out/mgc/
-      chmod -R 777 $out/mgc
-      ls $out
-    '';
     postInstall = ''
-      echo $out
-      ls -a $out
-      echo "----------"
-      ls -a $out/bin
-      echo "----------"
-      ls -a $out/lib
-      echo "----------"
-      ls -a $out/${pythonLibDir}
-      echo "----------"
-      ls -a $out/${pythonLibDir}/accel
-      echo "----------"
-      cat $out/${pythonLibDir}/accel/gif.py
-      echo "----------"
-      ls -a $out/${pythonLibDir}/accel/math
-      echo "----------"
-      ls -a $out/mgc
-      echo "----------"
+        cp -r ${geometry}/lib/geometry* $out/${pythonLibDir}/accel/math/
+        chmod -R 777 $out/${pythonLibDir}
     '';
 }

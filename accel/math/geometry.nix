@@ -4,28 +4,33 @@
 , pybind11
 }:
 pkgs.clangStdenv.mkDerivation {
-    name = "manif-geom-py";
+    name = "geometry";
     version = "1.0.0";
     src = pkgs.lib.cleanSource ./geometry-src/.;
-    
     nativeBuildInputs = [
         pkgs.cmake
         pkgs.clang
         pkgs.git
         python
     ];
-    
     buildInputs = [
         pkgs.eigen
+        manif-geom-cpp
     ];
-    
     prePatch = ''
         mkdir pybind11
-        mkdir manif-geom-cpp
-        echo "--------"
-        ls
-        echo "--------"
+        cp -r ${pybind11}/* pybind11/
+        chmod -R 777 pybind11
     '';
-    
-    # TODO
+    configurePhase = ''
+        mkdir build && cd build
+        cmake ..
+    '';
+    installPhase = ''
+        mkdir -p $out/lib
+        cp -r geometry* $out/lib
+        echo "----+"
+        ls $out/lib
+        echo "----+"
+    '';
 }

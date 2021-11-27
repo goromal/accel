@@ -8,7 +8,7 @@ Test suite for the accel utils modules.
 import pytest
 
 import numpy as np
-from accel.math.geometry import *
+from accel.math.geometry import SO3, SE3
 
 class TestSO3:
     """Test suite for the accel scheduler."""
@@ -26,8 +26,8 @@ class TestSO3:
         pitch = 0.6
         yaw = -0.4
         q = SO3.fromEuler(roll, pitch, yaw)
-        roll2, pitch2, yaw2 = q.toEuler()
-        assert np.isclose(roll, roll2) and np.isclose(pitch, pitch2) and np.isclose(yaw, yaw2)
+        rpy = q.toEuler()
+        assert np.isclose(roll, rpy[0]) and np.isclose(pitch, rpy[1]) and np.isclose(yaw, rpy[2])
         
 class TestSE3:
     def test_plus_minus(self):

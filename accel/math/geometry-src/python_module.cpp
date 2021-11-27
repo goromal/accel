@@ -1,4 +1,5 @@
-#include "utils/quat.h"
+#include <SO3.h>
+#include <SE3.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
@@ -8,50 +9,86 @@
 using namespace Eigen;
 namespace py = pybind11;
 
-PYBIND11_MODULE(utils_quat, m)
+PYBIND11_MODULE(geometry, m)
 {
-  m.doc() = "Python binding module for the utils quat class.";
-
-  py::class_<transforms::Quatd>(m, "Quat")
+  m.doc() = "Python binding module for SO3/SE3.";
+  
+  py::class_<SO3d>(m, "SO3")
+    .def_static("random", &SO3d::random)
+    .def_static("identity", &SO3d::identity)
+    .def_static("fromAxisAngle", &SO3d::fromAxisAngle)
+    .def_static("fromEuler", &SO3d::fromEuler)
+    .def_static("fromR", &SO3d::fromR)
+    .def_static("fromTwoUnitVectors", &SO3d::fromTwoUnitVectors)
+    .def_static("fromQuat", static_cast<SO3d (SO3d::*)(const double, const double, const double, const double)>(&SO3d::fromQuat), "Instantiate SO3 from quaternion fields")
+    .def_static("fromQuat", static_cast<SO3d (SO3d::*)(const Matrix<double,4,1> &)>(&SO3d::fromQuat), "Instantiate SO3 from a vector of quaternion fields")
     .def(py::init())
     .def(py::init<const Ref<const Matrix<double,4,1>>>())
-    .def("w", &transforms::Quatd::w)
-    .def("x", &transforms::Quatd::x)
-    .def("y", &transforms::Quatd::y)
-    .def("z", &transforms::Quatd::z)
-    .def("setW", &transforms::Quatd::setW)
-    .def("setX", &transforms::Quatd::setX)
-    .def("setY", &transforms::Quatd::setY)
-    .def("setZ", &transforms::Quatd::setZ)
-    .def("elements", &transforms::Quatd::elements)
+    .def("w", &SO3d::w)
+    .def("x", &SO3d::x)
+    .def("y", &SO3d::y)
+    .def("z", &SO3d::z)
+    .def("setW", &SO3d::setW)
+    .def("setX", &SO3d::setX)
+    .def("setY", &SO3d::setY)
+    .def("setZ", &SO3d::setZ)
+    .def("array", &SO3d::array)
+    .def("normalize", &SO3d::normalize)
+    .def("R", &SO3d::R)
+    .def("inverse", &SO3d::inverse)
+    .def("invert", &SO3d::invert)
+    .def("roll", &SO3d::roll)
+    .def("pitch", &SO3d::pitch)
+    .def("yaw", &SO3d::yaw)
+    .def("toEuler", &SO3d::toEuler)
+    .def("qMatLeft", &SO3d::qMatLeft)
     .def(py::self * py::self)
+    .def(py::self * Matrix<double,3,1>())
     .def(py::self + Matrix<double,3,1>())
     .def(py::self - py::self)
-    .def("roll", &transforms::Quatd::roll)
-    .def("pitch", &transforms::Quatd::pitch)
-    .def("yaw", &transforms::Quatd::yaw)
-    .def("euler", &transforms::Quatd::euler)
-    .def("R", &transforms::Quatd::R)
-    .def("normalize", &transforms::Quatd::normalize)
-    .def("rota", (Matrix<double, 3, 1> (transforms::Quatd::*) (const Matrix<double, 3, 1>&) const) &transforms::Quatd::rota, "The same as R.T * v but faster")
-    .def("rotp", (Matrix<double, 3, 1> (transforms::Quatd::*) (const Matrix<double, 3, 1>&) const) &transforms::Quatd::rotp, "The same as R * v but faster")
-    .def("invert", &transforms::Quatd::invert)
-    .def("inverse", &transforms::Quatd::inverse)
+    .def_static("hat", &SO3d::hat)
+    .def_static("vee", &SO3d::vee)
+    .def_static("log", &SO3d::log)
+    .def_static("Log", &SO3d::Log)
+    .def_static("exp", &SO3d::exp)
+    .def_static("Exp", &SO3d::Exp)
     .def("__repr__",
-      [](const transforms::Quatd &q) {
+      [](const SO3d &q) {
         std::stringstream ss;
         ss << q;
         return ss.str();
       }
     );
-
-    m.def("skew", &transforms::Quatd::skew);
-    m.def("exp", &transforms::Quatd::exp);
-    m.def("log", &transforms::Quatd::log);
-    m.def("from_R", &transforms::Quatd::from_R);
-    m.def("from_axis_angle", &transforms::Quatd::from_axis_angle);
-    m.def("from_euler", &transforms::Quatd::from_euler);
-    m.def("from_two_unit_vectors", &transforms::Quatd::from_two_unit_vectors);
-    m.def("Identity", &transforms::Quatd::Identity);
-    m.def("Random", &transforms::Quatd::Random);
+    
+  py::class_<SE3d>(m, "SE3")
+    .def_static("random", &SE3d::random)
+    .def_static("identity", &SE3d::identity)
+    .def_static("fromH", &SE3d::fromH)
+    .def_static("fromVecAndQuat", static_cast<SE3d (SE3d::*)(const double, const double, const double, const double, const double, const double, const double)>(&SE3d::fromVecAndQuat), "Instantiate SE3 from translation and quaternion fields")
+    .def_static("fromVecAndQuat", static_cast<SE3d (SE3d::*)(const Matrix<double,3,1> &, const Matrix<double,4,1> &)>(&SE3d::fromVecAndQuat), "Instantiate SE3 from a translation vector and vector of quaternion fields")
+    .def(py::init())
+    .def(py::init<const Ref<const Matrix<double,7,1>>>())
+    .def("t", &SE3d::t)
+    .def("q", &SE3d::q)
+    .def("array", &SE3d::array)
+    .def("H", &SE3d::H)
+    .def("inverse", &SE3d::inverse)
+    .def("invert", &SE3d::invert)
+    .def(py::self * py::self)
+    .def(py::self * Matrix<double,3,1>())
+    .def(py::self + Matrix<double,6,1>())
+    .def(py::self - py::self)
+    .def_static("hat", &SE3d::hat)
+    .def_static("vee", &SE3d::vee)
+    .def_static("log", &SE3d::log)
+    .def_static("Log", &SE3d::Log)
+    .def_static("exp", &SE3d::exp)
+    .def_static("Exp", &SE3d::Exp)
+    .def("__repr__",
+      [](const SE3d &q) {
+        std::stringstream ss;
+        ss << q;
+        return ss.str();
+      }
+    );
 }
