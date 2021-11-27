@@ -16,7 +16,7 @@ class TestSO3:
     def test_plus_minus(self):
         np.random.seed(144440)
         R1 = SO3.random()
-        w = np.array([[0.5, 0.2, 0.1]]).T
+        w = np.array([0.5, 0.2, 0.1])
         R2 = R1 + w
         w2 = R2 - R1
         assert np.allclose(w, w2)

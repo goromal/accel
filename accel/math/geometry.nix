@@ -29,8 +29,5 @@ pkgs.clangStdenv.mkDerivation {
     installPhase = ''
         mkdir -p $out/lib
         cp -r geometry* $out/lib
-        echo "----+"
-        ls $out/lib
-        echo "----+"
     '';
 }
