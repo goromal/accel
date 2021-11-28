@@ -30,13 +30,13 @@ class TestSO3:
         assert np.isclose(roll, rpy[0]) and np.isclose(pitch, rpy[1]) and np.isclose(yaw, rpy[2])
         
 class TestSE3:
-#    def test_plus_minus(self):
-#        np.random.seed(144440)
-#        T1 = SE3.random()
-#        w = np.random.random((6,1))
-#        T2 = T1 + w
-#        w2 = T2 - T1
-#        assert np.allclose(w, w2)
+    def test_plus_minus(self):
+        np.random.seed(144440)
+        T1 = SE3.random()
+        w = np.random.random((6,1))
+        T2 = T1 + w
+        w2 = T2 - T1
+        assert np.allclose(w, w2)
     
     def test_composition(self):
         np.random.seed(144440)
