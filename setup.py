@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 # get key package details from accel/__version__.py
 about = {}  # type: ignore
@@ -24,7 +24,7 @@ setup(
     author=about['__author__'],
     author_email=about['__author_email__'],
     url=about['__url__'],
-    packages=['accel'],
+    packages=find_packages(exclude=('tests')),
     include_package_data=True,
     python_requires=">=3.7.*",
     install_requires=['numpy', 'requests', 'colorama'],
