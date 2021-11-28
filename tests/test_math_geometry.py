@@ -42,7 +42,8 @@ class TestSE3:
         np.random.seed(144440)
         TI = SE3.identity()
         T1 = SE3.random()
-        T2 = T1 * T1.inverse()
+        T1i = T1.inverse()
+        T2 = T1 * T1i
         assert np.allclose(TI.array(), T2.array())
         
     def test_chart_maps(self):
