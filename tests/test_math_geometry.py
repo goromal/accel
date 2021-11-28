@@ -38,12 +38,12 @@ class TestSE3:
 #        w2 = T2 - T1
 #        assert np.allclose(w, w2)
     
-#    def test_composition(self):
-#        np.random.seed(144440)
-#        TI = SE3.identity()
-#        T1 = SE3.random()
-#        T2 = T1 * T1.inverse()
-#        assert np.allclose(TI.array(), T2.array())
+    def test_composition(self):
+        np.random.seed(144440)
+        TI = SE3.identity()
+        T1 = SE3.random()
+        T2 = T1 * T1.inverse()
+        assert np.allclose(TI.array(), T2.array())
         
     def test_chart_maps(self):
         np.random.seed(144440)
