@@ -16,7 +16,7 @@ pkgs.clangStdenv.mkDerivation {
     ];
     buildInputs = [
         pkgs.eigen
-        pkgs.manif-geom-cpp
+        manif-geom-cpp
         pkgs.glog
         pkgs.gflags
         pkgs.suitesparse
