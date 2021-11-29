@@ -2,12 +2,35 @@ import numpy as np
 from scipy.optimize import linprog
 
 class LinearProgram(object):
-    """A flexing, adaptive linear program taking string expressions."""
-    def __init__(self):
+    MIN = 0
+    MAX = 1
+    EQ  = 2
+    GEQ = 3
+    LEQ = 4
+    """A flexing, adaptive linear program supporting string expressions."""
+    def __init__(self, numDecVars):
         pass # TODO
         # self.
+        
+    def setCost(self, c, type=LinearProgram.MIN):
+        pass # TODO
+        
+    def addLinearConstraint(self, a, b, type=LinearProgram.EQ, idx=None):
+        pass # TODO return success, constraintID, renderStr
+        
+    def addAbsConstraint(self, alpha, c, beta, type=LinearProgram.LEQ, idx=None):
+        pass # TODO return success, constraintID, renderStr
+        
+    def rmConstraint(self, constraintID):
+        pass # TODO return success
+        
+    def getStandard(self):
+        pass # TODO return matrices (and render?)
+        
+    def solve(self):
+        pass # TODO call getStandard, return sol stuff
     
-    # TODO add analysis tools for MIT class? e.g., report on if your current program is valid
+    # TODO add analysis tools for MIT class? e.g., report on if your current program is valid, -> convert to standard form
 
 class Scheduler(object):
     def __init__(self):
