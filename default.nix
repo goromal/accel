@@ -28,6 +28,13 @@ let
         inherit python;
         inherit pybind11;
     };
+    pyceres = import ./accel/math/pyceres.nix {
+        inherit pkgs;
+        inherit manif-geom-cpp;
+        inherit ceres;
+        inherit python;
+        inherit pybind11;
+    };
 in python.pkgs.buildPythonPackage rec {
     pname = "accel";
     version = "0.0.0";
@@ -43,6 +50,7 @@ in python.pkgs.buildPythonPackage rec {
     doCheck = false;
     postInstall = ''
         cp -r ${geometry}/lib/geometry* $out/${pythonLibDir}/accel/math/
+        cp -r ${geometry}/lib/pyceres* $out/${pythonLibDir}/accel/math/
         chmod -R 777 $out/${pythonLibDir}
     '';
 }

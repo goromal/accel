@@ -1,5 +1,6 @@
 { pkgs
-, ceres 
+, manif-geom-cpp 
+, ceres
 , python
 , pybind11
 }:
@@ -7,7 +8,6 @@ pkgs.clangStdenv.mkDerivation {
     name = "pyceres";
     version = "1.0.0";
     src = pkgs.lib.cleanSource ./.;
-    
     nativeBuildInputs = [
         pkgs.cmake
         pkgs.clang
@@ -16,6 +16,7 @@ pkgs.clangStdenv.mkDerivation {
     ];
 
     buildInputs = [
+        pkgs.manif-geom-cpp
         pkgs.eigen
         pkgs.glog
         pkgs.gflags
