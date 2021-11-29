@@ -83,7 +83,7 @@ EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     SO3<T> q_hat(_q_hat);
     Eigen::Map<Eigen::Matrix<T,3,1>> r(_res);
     
-    r = Qij_inv_.cast<T>() * (q_hat - q_);
+    r = Qij_inv_.cast<T>() * (q_hat - static_cast<SO3<T>>(q_));
     
     return true;
   }
@@ -122,7 +122,7 @@ EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     SE3<T> Xj_hat(_Xj_hat);
     Eigen::Map<Eigen::Matrix<T,6,1>> r(_res);
     
-    r = Qij_inv_.cast<T>() * (Xi_hat.inverse() * Xj_hat - Xij_);  
+    r = Qij_inv_.cast<T>() * (Xi_hat.inverse() * Xj_hat - static_cast<SE3<T>>(Xij_));  
 
     return true;
   }
