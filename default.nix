@@ -50,7 +50,7 @@ in python.pkgs.buildPythonPackage rec {
     doCheck = false;
     postInstall = ''
         cp -r ${geometry}/lib/geometry* $out/${pythonLibDir}/accel/math/
-        cp -r ${geometry}/lib/pyceres* $out/${pythonLibDir}/accel/math/
+        cp -r ${pyceres}/lib/pyceres* $out/${pythonLibDir}/accel/math/
         chmod -R 777 $out/${pythonLibDir}
     '';
 }
