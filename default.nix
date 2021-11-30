@@ -19,7 +19,7 @@ let
     };
     manif-geom-cpp = import (builtins.fetchGit {
         url = "https://github.com/goromal/manif-geom-cpp.git";
-        rev = "2a10c5276e6a44e3817ea3288ea2409b91fa4efd";
+        rev = "21ef725781f87834aab5ac7184090e6909df457c";
         ref = "master";
     }) { inherit pkgs; };
     geometry = import ./accel/math/geometry.nix {
@@ -46,11 +46,12 @@ in python.pkgs.buildPythonPackage rec {
 	    pypkgs.ffmpeg-python
 	    pypkgs.scipy
 	    pypkgs.networkx
+	    pypkgs.osqp
     ];
     doCheck = false;
     postInstall = ''
         cp -r ${geometry}/lib/geometry* $out/${pythonLibDir}/accel/math/
-        cp -r ${geometry}/lib/pyceres* $out/${pythonLibDir}/accel/math/
+        cp -r ${pyceres}/lib/pyceres* $out/${pythonLibDir}/accel/math/
         chmod -R 777 $out/${pythonLibDir}
     '';
 }

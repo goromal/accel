@@ -11,11 +11,12 @@ mkShell rec {
         accel
         pytest
         virtualenv
-	      ffmpeg
-	      scipy
-	      networkx
-	      colormath
+	    ffmpeg
+	    scipy
+	    networkx
+	    colormath
         ffmpeg-python
+        osqp
 #        black
 #        flake8
 #        mypy
