@@ -15,7 +15,6 @@ pkgs.clangStdenv.mkDerivation {
         python
     ];
     buildInputs = [
-        pkgs.manif-geom-cpp
         pkgs.eigen
         manif-geom-cpp
         pkgs.glog
