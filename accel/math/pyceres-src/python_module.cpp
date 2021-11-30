@@ -404,7 +404,7 @@ double *ParseNumpyData(py::array_t<double> &np_buf) {
   return (double *) info.ptr;
 }
 
-PYBIND11_MODULE(PyCeres, m) {
+PYBIND11_MODULE(pyceres, m) {
   m.doc() = "Ceres wrappers"; // optional module docstring'
 
   py::enum_<ceres::Ownership>(m, "Ownership")
