@@ -26,7 +26,7 @@ class Optimizer(object):
         SCALAR = 0
         SO3 = 1
         SE3 = 2
-        def __init__(self, val):
+        def __init__(self, val, fixed):
             super(self, DecVar).__init__()
             self.type = None
             if isinstance(val, float):
@@ -38,6 +38,7 @@ class Optimizer(object):
             else:
                 self.valid = False
             self.val = val
+            self.fixed = fixed
             
     class Cost(Spec):
         MIN = 0
@@ -63,6 +64,7 @@ class Optimizer(object):
         def __init__(self, parent, IDs, c, type):
             super(self, LinearCost).__init__(parent, IDs, type)
             self.validateArr(c, size=len(IDs))
+            self.c = c
             
     class QuadraticCost(Cost):
         def __init__(self, parent, IDs, Q, type):
@@ -70,6 +72,7 @@ class Optimizer(object):
             n = len(IDs)
             if not isinstance(Q, np.ndarray) or not Q.shape == (n, n):
                 self.valid = False
+            self.Q = Q
             
     class ResidualLinearCost(Cost):
         def __init__(self, parent, IDs, a, b, type):
@@ -77,18 +80,48 @@ class Optimizer(object):
             self.validateArr(a, size=len(IDs))
             if not isinstance(b, float):
                 self.validate = False
+            self.a = a
+            self.b = b
             
     class ResidualSO3Cost(Cost):
-        def __init__(self, parent, ID, q_meas, type):
+        def __init__(self, parent, ID, q_meas, Q, type):
             super(self, ResidualSO3Cost).__init__(parent, [ID], type)
             if not isinstance(q_meas, SO3):
                 self.valid = False
+            if not isinstance(Q, np.ndarray) or Q.shape != (3, 3):
+                self.valid = False
+            self.q = q_meas.array()
+            self.Q = Q
+            
+    class ResidualDeltaSO3Cost(Cost):
+        def __init__(self, parent, IDi, IDj, qij_meas, Q, type):
+            super(self, ResidualDeltaSO3Cost).__init__(parent, [IDi, IDj], type)
+            if not isinstance(qij_meas, SO3):
+                self.valid = False
+            if not isinstance(Q, np.ndarray) or Q.shape != (3, 3):
+                self.valid = False
+            self.q = qij_meas.array()
+            self.Q = Q
             
     class ResidualSE3Cost(Cost):
-        def __init__(self, parent, ID, T_meas, type):
+        def __init__(self, parent, ID, T_meas, Q, type):
             super(self, ResidualSE3Cost).__init__(parent, [ID], type)
             if not isinstance(T_meas, SE3):
                 self.valid = False
+            if not isinstance(Q, np.ndarray) or Q.shape != (6, 6):
+                self.valid = False
+            self.T = T_meas.array()
+            self.Q = Q
+            
+    class ResidualDeltaSE3Cost(Cost):
+        def __init__(self, parent, IDi, IDj, Tij_meas, Q, type):
+            super(self, ResidualDeltaSE3Cost).__init__(parent, [IDi, IDj], type)
+            if not isinstance(Tij_meas, SE3):
+                self.valid = False
+            if not isinstance(Q, np.ndarray) or Q.shape != (6, 6):
+                self.valid = False
+            self.T = Tij_meas.array()
+            self.Q = Q
             
     class Constraint(Spec):
         EQ = 0
@@ -119,6 +152,7 @@ class Optimizer(object):
             super(self, VariableConstraint).__init__(parent, [ID], type)
             if not isinstance(b, float):
                 self.valid = False
+            self.b = b
             
     class LinearConstraint(Constraint):
         def __init__(self, parent, IDs, a, b, type):
@@ -126,33 +160,59 @@ class Optimizer(object):
             self.validateArr(a, size=len(IDs))
             if not isinstance(b, float):
                 self.valid = False
+            self.a = a
+            self.b = b
             
     class AbsConstraint(Constraint):
         def __init__(self, parent, ID, alpha, c, beta, type):
             super(self, AbsConstraint).__init__(parent, [ID], type)
             if not isinstance(alpha, float) or not isinstance(c, float) or not isinstance(beta, float):
                 self.valid = False
+            self.a = alpha
+            self.b = beta
+            self.c = c
                 
     class Program(object):
-        def __init__(self):
+        def __init__(self, decVars):
+            self.decVarLabels = list()
+            self.decVarTypes = list()
+            self.decVarFixed = list()
             self.decVarList = list()
-            
-        def addDecVars(self, decVars):
-            pass # TODO
-            
-        def formulate(self):
-            pass
+            for key, decVar in decVars:
+                self.decVarLabels.append(key)
+                self.decVarTypes.append(decVar.type)
+                self.decVarFixed.append(decVar.fixed)
+                if decVar.type == DecVar.SCALAR:
+                    self.decVarList.append(decVal.val)
+                else:
+                    self.decVarList.append(decVal.val.array())
+                    
+        def _get_decvar(self, key):
+            return self.decVarList[self.decVarLabels.index(key)]
             
         def render(self):
             return None
-            
+        
         def solve(self):
             return None
             
     class OSQProgram(Program):
-        def __init__(self):
-            super(OSQProgram, self).__init__()
-            pass # TODO
+        def __init__(self, decVars):
+            super(OSQProgram, self).__init__(decVars)
+            allScalars = True
+            for type in self.decVarTypes:
+                allScalars = allScalars and (type == DecVar.SCALAR)
+            assert allScalars
+            self.n = len(self.decVarList)
+            self.m = 0
+            self.P = np.zeros((self.n, self.n))
+            self.q = np.zeros((self.n,))
+            self.A = None
+            self.l = None
+            self.u = None
+            self.Arows = list()
+            self.lrows = list()
+            self.urows = list()
             
         def addCosts(self, linear, quadratic, residualLinear):
             pass # TODO
@@ -160,40 +220,92 @@ class Optimizer(object):
         def addConstraints(self, variable, linear, absval):
             pass # TODO
             
-        @override
-        def formulate(self):
-            pass # TODO
+        def createMatrices(self):
+            if self.m > 0:
+                self.A = np.vstack(self.Arows)
+                self.l = np.array(self.lrows)
+                self.u = np.array(self.urows)
             
         @override
         def render(self):
-            pass # TODO
+            if self.A is None:
+                self.createMatrices()
+            raise NotImplementedError
             
         @override
         def solve(self):
+            if self.A is None:
+                self.createMatrices()
+            # TODO make P and A sparse matrices
+            prob = osqp.OSQP()
+            prob.setup(self.P, self.q, self.A, self.l, self.u)
+            res = prob.solve()
             pass # TODO
             
     class CeresProgram(Program):
-        def __init__(self):
-            super(CeresProgram, self).__init__()
-            pass # TODO
+        def __init__(self, decVars):
+            super(CeresProgram, self).__init__(decVars)
+            self.problem = ceres.Problem()
+            self.options = ceres.SolverOptions()
+            self.options.max_num_iterations = 25
+            self.options.linear_solver_type = ceres.LinearSolverType.SPARSE_NORMAL_CHOLESKY
+            self.options.minimizer_progress_to_stdout = False
+            self.summary = ceres.Summary()
+            for i in range(len(self.decVarList)):
+                if self.decVarTypes[i] == DecVar.SCALAR:
+                    raise NotImplementedError
+                elif self.decVarTypes[i] == DecVar.SO3:
+                    self.problem.AddParameterBlock(self.decVarList[i], 4, ceres.SO3Parameterization())
+                elif self.decVarTypes[i] == DecVar.SE3:
+                    self.problem.AddParameterBlock(self.decVarList[i], 7, ceres.SE3Parameterization())
+                else:
+                    raise NotImplementedError
+                if self.decVarFixed[i]:
+                    self.problem.SetParameterBlockConstant(self.decVarList[i])
             
-        def addCosts(self, linear, quadratic, residualLinear, residualSO3, residualSE3):
-            pass # TODO
+        def addCosts(self, linear, quadratic, residualLinear, residualSO3, residualDeltaSO3, residualSE3, residualDeltaSE3):
+            for cost in linear:
+                raise NotImplementedError
+            for cost in quadratic:
+                raise NotImplementedError
+            for cost in residualLinear:
+                raise NotImplementedError
+            for cost in residualSO3:
+                self.problem.AddResidualBlock(ceres.SO3Factor(cost.q, cost.Q), None, self._get_decvar(cost.IDs[0]))
+            for cost in residualDeltaSO3:
+                self.problem.AddResidualBlock(ceres.DeltaSO3Factor(cost.q, cost.Q), None, self._get_decvar(cost.IDs[0]), self._get_decvar(cost.IDs[1]))
+            for cost in residualSE3:
+                self.problem.AddResidualBlock(ceres.SE3Factor(cost.T, cost.Q), None, self._get_decvar(cost.IDs[0]))
+            for cost in residualDeltaSE3:
+                self.problem.AddResidualBlock(ceres.DeltaSE3Factor(cost.T, cost.Q), None, self._get_decvar(cost.IDs[0]), self._get_decvar(cost.IDs[1]))
             
         def addConstraints(self, variable, linear, absval):
-            pass # TODO
-            
-        @override
-        def formulate(self):
-            pass # TODO
+            for cons in variable:
+                raise NotImplementedError
+            for cons in linear:
+                raise NotImplementedError
+            for cons in absval:
+                raise NotImplementedError
             
         @override
         def render(self):
-            pass # TODO
+            raise NotImplementedError
         
         @override
         def solve(self):
-            pass # TODO
+            ceres.Solve(self.options, self.problem, self.summary)
+            solved = self.summary.IsSolutionUsable()
+            sols = list()
+            for label, type, val in zip(self.decVarLabels, self.decVarTypes, self.decVarList):
+                sol = None
+                if type == DecVar.SCALAR:
+                    sol = val
+                elif type == DecVar.SO3:
+                    sol = SO3(val)
+                elif type == DecVar.SE3:
+                    sol = SE3(val)
+                sols.append((label, sol))
+            return solved, sols
     
     def __init__(self):
         self.specs = dict()
@@ -212,8 +324,8 @@ class Optimizer(object):
             self.formulated = False
         return specID
     
-    def addDecVar(self, val): # Ex: x1 = opt.addDecVar(4.0)
-        return self._check_add_spec(DecVar, (val))
+    def addDecVar(self, val, fixed=False): # Ex: x1 = opt.addDecVar(4.0)
+        return self._check_add_spec(DecVar, (val, fixed))
             
     def addLinearCost(self, IDs, c, type=Cost.MIN): # Ex: C1 = opt.addLinearCost([x1, x2], [1.0, 2.0])
         return self._check_add_spec(LinearCost, (self, IDs, c, type))
@@ -224,11 +336,17 @@ class Optimizer(object):
     def addResidualLinearCost(self, IDs, a, b, type=Cost.MIN):
         return self._check_add_spec(ResidualLinearCost, (self, IDs, a, b, type))
         
-    def addResidualSO3Cost(self, ID, q_meas, type=Cost.MIN):
-        return self._check_add_spec(ResidualSO3Cost, (self, ID, q_meas, type))
+    def addResidualSO3Cost(self, ID, q_meas, Q=np.eye((3,3))):
+        return self._check_add_spec(ResidualSO3Cost, (self, ID, q_meas, Q, Cost.MIN))
         
-    def addResidualSE3Cost(self, ID, T_meas, type=Cost.MIN):
-        return self._check_add_spec(ResidualSE3Cost, (self, ID, T_meas, type))
+    def addResidualDeltaSO3Cost(self, IDi, IDj, qij_meas, Q=np.eye((3,3))):
+        return self._check_add_spec(ResidualDeltaSO3Cost, (self, IDi, IDj, qij_meas, Q, Cost.MIN))
+        
+    def addResidualSE3Cost(self, ID, T_meas, Q=np.eye((6,6))):
+        return self._check_add_spec(ResidualSE3Cost, (self, ID, T_meas, Q, Cost.MIN))
+        
+    def addResidualDeltaSE3Cost(self, IDi, IDj, Tij_meas, Q=np.eye((6,6))):
+        return self._check_add_spec(ResidualDeltaSE3Cost, (self, IDi, IDj, Tij_meas, Q, Cost.MIN))
         
     def addVariableConstraint(self, ID, b, type):
         return self._check_add_spec(VariableConstraint, (self, ID, b, type))
@@ -257,30 +375,30 @@ class Optimizer(object):
         return removed
         
     def formulate(self, render=False):
-        decVars = [val for key, val in self.specs.items() if isinstance(val, DecVar)]
+        decVars = [(key, val) for key, val in self.specs.items() if isinstance(val, DecVar)]
         linearCosts = [val for key, val in self.specs.items() if isinstance(val, LinearCost)]
         quadraticCosts = [val for key, val in self.specs.items() if isinstance(val, QuadraticCost)]
         residualLinearCosts = [val for key, val in self.specs.items() if isinstance(val, ResidualLinearCost)]
         residualSO3Costs = [val for key, val in self.specs.items() if isinstance(val, ResidualSO3Cost)]
+        residualDeltaSO3Costs = [val for key, val in self.specs.items() if isinstance(val, ResidualDeltaSO3Cost)]
         residualSE3Costs = [val for key, val in self.specs.items() if isinstance(val, ResidualSE3Cost)]
+        residualDeltaSE3Costs = [val for key, val in self.specs.items() if isinstance(val, ResidualDeltaSE3Cost)]
         variableConstraints = [val for key, val in self.specs.items() if isinstance(val, VariableConstraint)]
         linearConstraints = [val for key, val in self.specs.items() if isinstance(val, LinearConstraint)]
         absConstraints = [val for key, val in self.specs.items() if isinstance(val, AbsConstraint)]
         
         # TODO what would a joint manifold/vector optimization look like? how can we facilitate it?
         
-        if len(residualSO3Costs) == 0 and len(residualSE3Costs) == 0:
-            self.program = OSQProgram()
-            self.program.addDecVars(decVars)
+        if len(residualSO3Costs) == 0 and len(residualSE3Costs) == 0 and len(residualDeltaSO3Costs) == 0 and len(residualDeltaSE3Costs) == 0:
+            self.program = OSQProgram(decVars)
             self.program.addCosts(linearCosts, quadraticCosts, residualLinearCosts)
             self.program.addConstraints(variableConstraints, linearConstraints, absConstraints)
+            self.program.createMatrices()
         else:
-            self.program = CeresProgram()
-            self.program.addDecVars(decVars)
-            self.program.addCosts(linearCosts, quadraticCosts, residualLinearCosts, residualSO3Costs, residualSE3Costs)
+            self.program = CeresProgram(decVars)
+            self.program.addCosts(linearCosts, quadraticCosts, residualLinearCosts, residualSO3Costs, residualDeltaSO3Costs, residualSE3Costs, residualDeltaSE3Costs)
             self.program.addConstraints(variableConstraints, linearConstraints, absConstraints)
             
-        self.program.formulate()
         self.formulated = True
         
     def render(self):
@@ -294,7 +412,7 @@ class Optimizer(object):
         return self.program.solve()
             
             
-class Scheduler(object):
+class Scheduler(object): # TODO refactor
     def __init__(self):
         self.events = list() # len = num_states
         self.constraints = dict() # len = num_constraints
@@ -315,6 +433,15 @@ class Scheduler(object):
         pass
         
 class LineFitter(object):
+    pass # TODO accommodate options for lasso and huber fitting
+    
+class KinematicMPC(object):
+    pass # TODO up to n derivatives, should provide great intuition
+    
+class RiskAdjustedReturn(object):
+    pass # TODO call stats methods?
+    
+class BinaryClassifier(object):
     pass # TODO
     
 class RotationAverager(object):
