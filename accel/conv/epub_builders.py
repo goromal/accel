@@ -1,0 +1,1 @@
+# implement pandoc-book-like class + inheriting url2epub base class
