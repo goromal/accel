@@ -1,36 +1,44 @@
-{ pkgs
+{ stdenv
+, cleanSource
+, cmake
+, clang
+, git
+, eigen
+, glog
+, gflags
+, suitesparse
 , manif-geom-cpp 
-, ceres
+, ceres-src
 , python
-, pybind11
+, pybind11-src
 }:
-pkgs.clangStdenv.mkDerivation {
+stdenv.mkDerivation {
     name = "pyceres";
     version = "1.0.0";
-    src = pkgs.lib.cleanSource ./pyceres-src/.;
+    src = cleanSource ./pyceres-src/.;
     nativeBuildInputs = [
-        pkgs.cmake
-        pkgs.clang
-        pkgs.git
+        cmake
+        clang
+        git
         python
     ];
     buildInputs = [
-        pkgs.eigen
+        eigen
         manif-geom-cpp
-        pkgs.glog
-        pkgs.gflags
-        pkgs.suitesparse
+        glog
+        gflags
+        suitesparse
     ];
     prePatch = ''
         mkdir pyceres-src
         mv *.cpp pyceres-src
         mv AddToCeres.cmake pyceres-src
         mkdir ceres-solver
-        cp -r ${ceres}/* ceres-solver/
+        cp -r ${ceres-src}/* ceres-solver/
         mv pyceres-src ceres-solver/pyceres-src
         chmod -R 777 ceres-solver
         mkdir ceres-solver/pyceres-src/pybind11
-        cp -r ${pybind11}/* ceres-solver/pyceres-src/pybind11/
+        cp -r ${pybind11-src}/* ceres-solver/pyceres-src/pybind11/
         chmod -R 777 ceres-solver/pyceres-src/pybind11
     '';
     patches = [

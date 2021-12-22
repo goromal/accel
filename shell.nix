@@ -17,9 +17,6 @@ mkShell rec {
 	    colormath
         ffmpeg-python
         osqp
-#        black
-#        flake8
-#        mypy
     ];
     shellHook = ''
         virtualenv --no-setuptools venv

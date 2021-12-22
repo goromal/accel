@@ -1,25 +1,30 @@
-{ pkgs
+{ stdenv
+, cleanSource
 , manif-geom-cpp 
 , python
-, pybind11
+, pybind11-src
+, cmake
+, clang
+, git
+, eigen
 }:
-pkgs.clangStdenv.mkDerivation {
+stdenv.mkDerivation {
     name = "geometry";
     version = "1.0.0";
-    src = pkgs.lib.cleanSource ./geometry-src/.;
+    src = cleanSource ./geometry-src/.;
     nativeBuildInputs = [
-        pkgs.cmake
-        pkgs.clang
-        pkgs.git
+        cmake
+        clang
+        git
         python
     ];
     buildInputs = [
-        pkgs.eigen
+        eigen
         manif-geom-cpp
     ];
     prePatch = ''
         mkdir pybind11
-        cp -r ${pybind11}/* pybind11/
+        cp -r ${pybind11-src}/* pybind11/
         chmod -R 777 pybind11
     '';
     configurePhase = ''

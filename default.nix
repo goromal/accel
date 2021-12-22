@@ -2,56 +2,71 @@
 }:
 let
     pkgs = import (if local then <nixpkgs> else builtins.fetchGit (import ./src.nix)) {};
-    python = pkgs.python37;
-    pypkgs = python.pkgs;
-    pythonLibDir = "lib/python${python.passthru.pythonVersion}/site-packages";
-    pybind11 = pkgs.fetchgit {
+    pybind11-src = pkgs.fetchgit {
         fetchSubmodules = true;
         url = "https://github.com/pybind/pybind11.git";
         rev = "07e225932235ccb0db5271b0874d00f086f28423";
         sha256 = "1wb57ff1xnblg7m136226ihfv1v01q366d54l08wi8hky19jcfh0";
     };
-    ceres = pkgs.fetchgit {
+    ceres-src = pkgs.fetchgit {
         fetchSubmodules = true;
         url = "https://github.com/ceres-solver/ceres-solver.git";
         rev = "31008453fe979f947e594df15a7e254d6631881b";
         sha256 = "1qbc21ivwy7vwfshh6iasyvbdri85inkwy3gnnxyvk8dkpw2m1vl";
     };
+    stdenv = pkgs.clangStdenv;
+    cmake = pkgs.cmake;
+    clang = pkgs.clang;
+    eigen = pkgs.eigen;
+    git = pkgs.git;
+    glog = pkgs.glog;
+    gflags = pkgs.gflags;
+    suitesparse = pkgs.suitesparse;
+    cleanSource = pkgs.lib.cleanSource;
     manif-geom-cpp = import (builtins.fetchGit {
         url = "https://github.com/goromal/manif-geom-cpp.git";
-        rev = "21ef725781f87834aab5ac7184090e6909df457c";
+        rev = "3ca0626df33139fb3a6a711008f9b7252c6577cb";
         ref = "master";
-    }) { inherit pkgs; };
-    geometry = import ./accel/math/geometry.nix {
-        inherit pkgs;
-        inherit manif-geom-cpp;
-        inherit python;
-        inherit pybind11;
+    } + "/manif-geom-cpp.nix") { 
+        inherit stdenv;
+        inherit cleanSource;
+        inherit cmake;
+        inherit clang;
+        inherit git;
+        inherit eigen;
+        boost = pkgs.boost;
     };
-    pyceres = import ./accel/math/pyceres.nix {
-        inherit pkgs;
-        inherit manif-geom-cpp;
-        inherit ceres;
-        inherit python;
-        inherit pybind11;
-    };
-in python.pkgs.buildPythonPackage rec {
-    pname = "accel";
-    version = "0.0.0";
-    src = pkgs.lib.cleanSource ./.;
-    propagatedBuildInputs = [
-        pypkgs.numpy
-        pypkgs.requests
-        pypkgs.colorama
-	    pypkgs.ffmpeg-python
-	    pypkgs.scipy
-	    pypkgs.networkx
-	    pypkgs.osqp
-    ];
-    doCheck = false;
-    postInstall = ''
-        cp -r ${geometry}/lib/geometry* $out/${pythonLibDir}/accel/math/
-        cp -r ${pyceres}/lib/pyceres* $out/${pythonLibDir}/accel/math/
-        chmod -R 777 $out/${pythonLibDir}
-    '';
+    runCommand = pkgs.runCommand;
+    python = pkgs.python37;
+    buildPythonPackage = pkgs.python37.pkgs.buildPythonPackage;
+    numpy = pkgs.python37.pkgs.numpy;
+    requests = pkgs.python37.pkgs.requests;
+    colorama = pkgs.python37.pkgs.colorama;
+    ffmpeg-python = pkgs.python37.pkgs.ffmpeg-python;
+    scipy = pkgs.python37.pkgs.scipy;
+    networkx = pkgs.python37.pkgs.networkx;
+    osqp = pkgs.python37.pkgs.osqp;
+in import ./accel.nix {
+    inherit pybind11-src;
+    inherit ceres-src;
+    inherit stdenv;
+    inherit cmake;
+    inherit clang;
+    inherit eigen;
+    inherit git;
+    inherit glog;
+    inherit gflags;
+    inherit suitesparse;
+    inherit cleanSource;
+    inherit runCommand;
+    inherit manif-geom-cpp;
+    inherit python;
+    inherit buildPythonPackage;
+    inherit numpy;
+    inherit requests;
+    inherit colorama;
+    inherit ffmpeg-python;
+    inherit scipy;
+    inherit networkx;
+    inherit osqp;
 }
